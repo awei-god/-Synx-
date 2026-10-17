@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS的事件处理</title>
+</head>
+<body>
+    <!-- 常见事件如下
+    事件        描述
+    onClick     点击事件
+    onMouseOver 鼠标经过
+    onMouseout  鼠标移出
+    onChange    文本内容改变事件
+    onSelect    文本框选中
+    onFocus     光标聚集
+    onBlur      移开光标 -->
+
+    <!-- 事件绑定
+    1. 'html'属性
+    2. 'DOM'属性
+    3. 'addEventlistener'方法 -->
+
+    <button onclick="click_event()">这是一个点击事件按钮</button>
+    <input type="text" onfocus="focus_event()" onblur="blur_event()">
+    <script>
+        //点击事件
+        function click_event(){
+            alert('点击事件触发了');
+        }
+
+        function focus_event(){
+            console.log('获取焦点');
+            
+        }
+
+        function blur_event(){
+            console.log('失去焦点');
+            
+        }
+    </script>
+</body>
+</html>

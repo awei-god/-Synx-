@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>浮动</title>
+    <style>
+        .father{
+            background:aqua;
+            /* height: 10px; */
+            border: 10px soild brown;
+            /* 如何清除浮动 */
+            overflow: hidden;
+        }
+
+        
+        .lson{
+            width: 100px;
+            height: 100px;
+            background: yellowgreen;
+            float: left;
+        }
+        .rson{
+            width: 100px;
+            height: 100px;
+            background: yellow;
+            float:right;
+        }
+    </style>
+</head>
+<body>
+    <div class="father">
+        <div class="lson">左浮动</div>
+        <div class="rson">右浮动</div>
+
+    </div>
+    <p>这是一个示例文本</p>
+</body>
+</html>

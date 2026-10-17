@@ -634,3 +634,127 @@ box-sizing: border-box;
 
 > **内边距是内容到边框的距离，外边距是边框到外部的距离。**  
 > `padding` 管内部留白，`margin` 管外部间距。
+>
+> # <script>
+`<script>` 是 **HTML 标签**，作用是：
+
+> 在网页中**嵌入 JavaScript 代码**，或者**引用外部 JavaScript 文件**。
+
+它不是用来显示内容的，而是让浏览器加载并执行脚本。
+
+## 1. 内联写法
+
+直接把 JavaScript 写在标签里面：
+
+```html
+<script>
+    console.log("Hello");
+    alert("页面加载了");
+</script>
+```
+
+浏览器解析到这里时，会执行里面的 JavaScript。
+
+## 2. 外部引用
+
+用 `src` 属性引入外部 `.js` 文件：
+
+```html
+<script src="app.js"></script>
+```
+
+注意：写了 `src` 后，标签中间一般不要再写代码：
+
+```html
+<script src="app.js">
+    // 这里通常不会执行
+</script>
+```
+
+正确写法是：
+
+```html
+<script src="app.js"></script>
+```
+
+## 3. 常见位置
+
+### 放在 `<body>` 末尾
+
+```html
+<body>
+    <div id="app"></div>
+    <script src="app.js"></script>
+</body>
+```
+
+好处是 HTML 先渲染，脚本再执行，能操作到前面的元素。
+
+### 放在 `<head>` 里
+
+```html
+<head>
+    <script src="app.js" defer></script>
+</head>
+```
+
+建议加 `defer`，让脚本在 HTML 解析完成后再执行。
+
+## 4. `defer` 和 `async`
+
+```html
+<script src="app.js" defer></script>
+```
+
+| 属性 | 作用 |
+|---|---|
+| `defer` | 异步下载，等 HTML 解析完再按顺序执行 |
+| `async` | 异步下载，下载完立刻执行，不保证顺序 |
+| 都不加 | 阻塞 HTML 解析，下载并执行完才继续 |
+
+一般业务脚本用：
+
+```html
+<script src="app.js" defer></script>
+```
+
+独立统计脚本可以用：
+
+```html
+<script src="analytics.js" async></script>
+```
+
+## 5. `type="module"`
+
+现代 JavaScript 模块写法：
+
+```html
+<script type="module" src="main.js"></script>
+```
+
+特点：
+
+- 支持 `import` / `export`
+- 默认延迟执行，类似 `defer`
+- 模块作用域独立
+
+## 6. 和 CSS 的区别
+
+| 标签 | 作用 |
+|---|---|
+| `<style>` | 写 CSS 样式 |
+| `<script>` | 写 JavaScript 脚本 |
+| `<link rel="stylesheet">` | 引入外部 CSS |
+
+## 7. 注意
+
+- `<script>` 里的代码会被浏览器执行，不要随便插入不可信内容，否则有 XSS 风险。
+- 脚本里可以用 `document.querySelector()` 操作页面元素。
+- 如果脚本要操作 DOM，最好放在 `body` 末尾，或者加 `defer`。
+- `<script>` 不会在页面上显示文字，除非脚本主动修改 DOM。
+
+## 总结
+
+> `<script>` 是 HTML 中用来写或引入 JavaScript 的标签。  
+> 内联用标签包裹代码，外部用 `src` 引入文件。  
+> 常配合 `defer`、`async` 或 `type="module"` 控制加载和执行方式。
