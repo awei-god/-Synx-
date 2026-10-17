@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS选择器</title>
+    <style>
+        h2{
+            color: rgb(13, 172, 172);
+        }
+
+        .highlight{
+            background-color: yellow;
+        }
+
+        #header{
+            color: rgb(68, 122, 122);
+        }
+
+        <!--这是通用选择器用*来选择所有-->
+        *{
+            font-family: 'kaiti';
+            font-weight: bolder;
+        }
+
+        /* 子元素选择器*/
+        .father > .son{
+            color:chocolate;
+           
+        }
+        /*优先级：ID>类>标签名*/
+
+        /*后代选择器*/
+        .father p{
+            color: darkblue;
+            font-size: larger;
+        }
+
+        /**/
+    </style>
+</head>
+<body>
+    <h1>不同类型的CSS选择器</h1>
+    <h2>这是一个元素选择器示例</h2>
+    <h3 class="highlight">这是一个类选择器</h3>
+    <h3 >这是一个类选择器</h3>
+
+    <h4 id="header">这是一个ID选择器示例 </h4>
+    <!--类选择器和ID选择器是最常用的选择器-->
+
+    <div class="father">
+        <p class="son">这是一个子元素选择器示例</p>
+        <div>
+            <p class="grandson">这是一个后代选择器示例</p>
+        </div>
+    </div>
+
+    <p>这是一个普通的p标签</p>
+    <h3>这是一个相邻兄弟选择器示例</h3>
+    <p>这是另一个p标签</p>
+</body>
+</html>
