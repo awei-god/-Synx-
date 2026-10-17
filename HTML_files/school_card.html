@@ -2,7 +2,7 @@
 <html>
     <head>
         <!--备注-->
-        <meta charset="zh=CN">
+        <meta charset="UTF-8">
         <title>校园活动</title>
         <style>
             body{
@@ -12,8 +12,16 @@
 
                 padding: 20px;/*设置内边距为 20 像素，表示上下左右四个方向都是 20px*/
             }
-            div{
+            .card-list{
+                display: flex;/*直接子元素就会横向排成一行。*/
+                gap: 16px;/*设置 Flex 容器或 Grid 容器中，子元素之间的间距为 16px。*/
+                flex-wrap: wrap;/*flex-wrap: wrap：一行放不下时自动换行，避免卡片被挤扁。*/
+
+            }
+            .card{
                 background: white;
+                border: none;
+                margin: 10px;
                 border-radius: 16px;/*设置圆角半径为 12 像素，四个角都会变圆*/
                 padding: 20px;
                 max-width: 400px;
@@ -23,9 +31,16 @@
                 8px	阴影模糊半径为 8px
                 rgba(0,0,0,0.1)	阴影颜色是黑色，透明度为 0.1，也就是很淡的黑色*/
             }
-            span{
+            .tag-sport{
                 background: #e0f0ff;
                 color: #0066cc;
+            }
+            .tag-academic{
+                background: #fff3e0;
+                color: #cc6600;
+            }
+            span{
+                display: inline-block;
                 padding: 2px 8px;
                 border-radius: 6px;
                 font-size: 13px;
@@ -39,22 +54,56 @@
                 color: white;
                 cursor:pointer;/*当鼠标移到这个元素上时，鼠标指针变成手型，提示用户“这里可以点击”。*/
             }
+            
+            
         </style>
     </head>
 
     <body>
         <h1>校园活动展示</h1>
-        <p>这是第一张卡片。</p>
-        <div>
-            <h2>校园歌手大赛</h2>
-            <span>文体活动</span>
-            <p>一年一度的校园歌手大赛，欢迎报名参加</p>
-            <button>点赞 (0)</button>
-            <button>查看更多</button>
-            <div id="detail" style="display: none;">/*display: none; 让元素不显示*/
-                <p>活动规则：每人限报一首歌，初赛清唱，决赛带伴奏。</p>
+        
+        <div class="card-list">
+            <!-- <p>这是第一张卡片。</p> -->
+            <div class="card">
+                <h2>校园歌手大赛</h2>
+                <span class="tag-sport">文体活动</span>
+                <p>一年一度的校园歌手大赛，欢迎报名参加</p>
+                <button>点赞 (0)</button>
+                <button>查看更多</button>
+                <div id="detail" style="display: none;">
+                    <!-- display: none; 让元素不显示 -->
+                    <p>活动规则：每人限报一首歌，初赛清唱，决赛带伴奏。</p>
+
+                </div>
 
             </div>
+            <!-- 这是第二张卡片 -->
+            <div class="card">
+                <h2>人工智能讲座</h2>
+                <span class="tag-academic">学术讲座</span>
+                <p>邀请专家分享 AI 前沿进展。</p>
+                <button>点赞 (0)</button>
+                <button>查看更多</button>
+                <div id="detail2" style="display: none;">
+                    <p>讲座地点：图书馆报告厅，需提前报名。</p>
+                </div>
+
+            </div>
+
+
+            <!-- 这是第三张卡片 -->
+            <div class="card">
+                <h2>校园马拉松</h2>
+                <span class="tag-sport">文体活动</span>
+                <p>健康奔跑，活力校园。</p>
+                <button>点赞 (0)</button>
+                <button>查看更多</button>
+                <div id="detail3" style="display: none;">
+                    <p>活动路线：环校一圈，全程约 5 公里。</p>
+                </div>
+            </div>
+
+
         </div>
     </body>
 </html>
