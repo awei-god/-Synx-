@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--备注-->
+        <meta charset="UTF-8">
+        <title>校园活动</title>
+        <style>
+            body{
+                font-family: sans-serif;/*设置字体为无衬线字体*/
+
+                background: #f5f5f5;/*设置背景颜色为浅灰色，#f5f5f5 是十六进制颜色值*/
+
+                padding: 20px;/*设置内边距为 20 像素，表示上下左右四个方向都是 20px*/
+            }
+            .card-list{
+                display: flex;/*直接子元素就会横向排成一行。*/
+                gap: 6px;/*设置 Flex 容器中，子元素之间的间距为 6px。*/
+                flex-wrap: wrap;/*一行放不下时自动换行，避免卡片被挤扁。*/
+
+            }
+            .card{
+                background: white;
+                border: none;
+                margin: 10px;
+                border-radius: 16px;/*设置圆角半径为 16 像素，四个角都会变圆*/
+                padding: 20px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);/*设置盒子阴影*/
+                /*0	水平阴影偏移量为 0
+                2px	垂直阴影向下偏移 2px
+                8px	阴影模糊半径为 8px
+                rgba(0,0,0,0.1)	阴影颜色是黑色，透明度为 0.1，也就是很淡的黑色*/
+            }
+            .tag-sport{
+                background: #e0f0ff;
+                color: #0066cc;
+            }
+            .tag-academic{
+                background: #fff3e0;
+                color: #cc6600;
+            }
+            span{
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 6px;
+                font-size: 13px;
+            }
+            button{
+                margin-right: 8px;
+                padding: 6px 14px;
+                border: none;/*去掉元素的所有边框。*/
+                border-radius: 6px;
+                background: #0066cc;
+                color: white;
+                cursor:pointer;/*当鼠标移到这个元素上时，鼠标指针变成手型，提示用户“这里可以点击”。*/
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>校园活动展示</h1>
+
+        <div class="card-list">
+
+            <!-- 第一张卡片 -->
+            <div class="card">
+                <h2>校园歌手大赛</h2>
+                <span class="tag-sport">文体活动</span>
+                <p>一年一度的校园歌手大赛，欢迎报名参加</p>
+                <button class="like-btn">点赞 (0)</button>
+                <button class="toggle-btn">查看更多</button>
+                <div class="detail" style="display: none;">
+                    <!-- display: none; 让元素默认不显示 -->
+                    <p>活动规则：每人限报一首歌，初赛清唱，决赛带伴奏。</p>
+                </div>
+            </div>
+
+            <!-- 第二张卡片 -->
+            <div class="card">
+                <h2>人工智能讲座</h2>
+                <span class="tag-academic">学术讲座</span>
+                <p>邀请专家分享 AI 前沿进展。</p>
+                <button class="like-btn">点赞 (0)</button>
+                <button class="toggle-btn">查看更多</button>
+                <div class="detail" style="display: none;">
+                    <p>讲座地点：图书馆报告厅，需提前报名。</p>
+                </div>
+            </div>
+
+            <!-- 第三张卡片 -->
+            <div class="card">
+                <h2>校园马拉松</h2>
+                <span class="tag-sport">文体活动</span>
+                <p>健康奔跑，活力校园。</p>
+                <button class="like-btn">点赞 (0)</button>
+                <button class="toggle-btn">查看更多</button>
+                <div class="detail" style="display: none;">
+                    <p>活动路线：环校一圈，全程约 5 公里。</p>
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+            console.log("JS 已加载");
+
+            // document.querySelectorAll(".card")：找到页面上所有 class 为 card 的元素，返回一个列表
+            // .forEach(function (card) { ... })：对列表里的每一个 card 都执行一遍大括号里的代码
+            document.querySelectorAll(".card").forEach(function (card) {
+
+                // 在当前这张 card 内部查找按钮和隐藏内容
+                // 注意：这里用 card.querySelector，不是 document.querySelector，只在这张卡片里找
+                const likeBtn = card.querySelector(".like-btn");
+                const toggleBtn = card.querySelector(".toggle-btn");
+                const detail = card.querySelector(".detail");
+
+                // 点赞状态：liked 记录是否已点赞，count 记录点赞数
+                // 这两个变量写在 forEach 里面，所以每张卡片都有自己独立的 liked 和 count
+                let liked = false;
+                let count = 0;
+
+                // 给当前卡片的点赞按钮绑定点击事件
+                likeBtn.addEventListener("click", function () {
+                    if (!liked) {
+                        // 当前未点赞 → 变成已点赞
+                        liked = true;
+                        count = 1;
+                        likeBtn.textContent = "已点赞 (" + count + ")";
+                    } else {
+                        // 当前已点赞 → 取消点赞
+                        liked = false;
+                        count = 0;
+                        likeBtn.textContent = "点赞 (" + count + ")";
+                    }
+                });
+
+                // 展开状态：expanded 记录当前是展开还是收起
+                // 同样写在 forEach 里面，每张卡片独立
+                let expanded = false;
+
+                // 给当前卡片的“查看更多”按钮绑定点击事件
+                toggleBtn.addEventListener("click", function () {
+                    if (!expanded) {
+                        // 当前收起 → 展开
+                        detail.style.display = "block";   // 显示规则
+                        // 把 detail 这个元素的 display 样式设置为 "block"，让它以块级元素的方式显示出来。
+                        toggleBtn.textContent = "收起";    // 按钮文字变“收起”
+                        expanded = true;                  // 记住已展开
+                    } else {
+                        // 当前展开 → 收起
+                        detail.style.display = "none";    // 隐藏规则
+                        toggleBtn.textContent = "查看更多"; // 按钮文字变回“查看更多”
+                        expanded = false;                 // 记住已收起
+                    }
+                });
+
+            });
+        </script>
+    </body>
+</html>
