@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--备注-->
+        <meta charset="UTF-8">
+        <title>校园活动</title>
+        <style>
+            body{
+                font-family: sans-serif;/*设置字体为无衬线字体*/
+
+                background: #f5f5f5;/*设置背景颜色为浅灰色，#f5f5f5 是十六进制颜色值*/
+
+                padding: 20px;/*设置内边距为 20 像素，表示上下左右四个方向都是 20px*/
+            }
+            .card-list{
+                display: flex;/*直接子元素就会横向排成一行。*/
+                gap: 6px;/*设置 Flex 容器中，子元素之间的间距为 6px。*/
+                flex-wrap: wrap;/*一行放不下时自动换行，避免卡片被挤扁。*/
+
+            }
+            .card{
+                background: white;
+                border: none;
+                margin: 10px;
+                border-radius: 16px;/*设置圆角半径为 16 像素，四个角都会变圆*/
+                padding: 20px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);/*设置盒子阴影*/
+                /*0	水平阴影偏移量为 0
+                2px	垂直阴影向下偏移 2px
+                8px	阴影模糊半径为 8px
+                rgba(0,0,0,0.1)	阴影颜色是黑色，透明度为 0.1，也就是很淡的黑色*/
+            }
+            .tag-sport{
+                background: #e0f0ff;
+                color: #0066cc;
+            }
+            .tag-academic{
+                background: #fff3e0;
+                color: #cc6600;
+            }
+            span{
+                display: inline-block;
+                padding: 2px 8px;
+                border-radius: 6px;
+                font-size: 13px;
+            }
+            button{
+                margin-right: 8px;
+                padding: 6px 14px;
+                border: none;/*去掉元素的所有边框。*/
+                border-radius: 6px;
+                background: #0066cc;
+                color: white;
+                cursor:pointer;/*当鼠标移到这个元素上时，鼠标指针变成手型，提示用户“这里可以点击”。*/
+            }
+
+            .form-box{
+                background: white;
+                padding:20px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                max-width: 500px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .form-item{
+                margin-bottom: 12px;
+            }
+
+            .form-item label{
+                display: block;
+                /* 让元素以块级元素的方式显示：独占一行，可以设置宽高，默认宽度撑满父容器。 */
+                margin-bottom: 4px;
+                font-size: 14px;
+                color: #333;
+            }
+
+            .form-item input,
+            .form-item select,
+            .form-item textarea{
+                width: 100%;
+                /* 让元素的宽度等于父容器可用宽度的 100%，也就是撑满父容器。 */
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 14px;
+                box-sizing: border-box;
+            }
+
+            .form-item textarea{
+                height: 80px;
+                resize: vertical;
+                /* 允许用户垂直方向拖动改变元素大小，不能水平拖动。 */
+            }
+
+            .error{
+                color: red;
+                font-size: 12px;
+                margin: 4px 0 0;
+                /* 上外边距 4px，左右外边距 0，下外边距 0。 */
+                min-height: 16px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>校园活动展示</h1>
+
+        <div class="form-box">
+            <h3>发布新活动</h3>
+
+            <div class="form-item">
+                <label for="titleInput">活动名称</label>
+                <input type="text" id="titleInput" placeholder="请输入活动名称">
+                <p class="error" id="titleError"></p>
+
+            </div>
+
+            <div class="form-item">
+                <label for="">活动分类</label>
+                <select name="" id="categorySelect">
+                    <option value="文体活动">文体活动</option>
+                    <option value="学术讲座">学术讲座</option>
+                </select>
+
+            </div>
+
+            <div class="form-item">
+                <label for="descInput">活动介绍</label>
+                <textarea name="" id="descInput" placeholder="请输入活动介绍"></textarea>
+                <p class="error" id="descError"></p>
+                <!-- 这是一个空的错误提示段落，class="error" 管样式，id="descError" 给 JS 定位，初始为空，校验失败时由 JS 写入提示文字。 -->
+
+            </div>
+
+            <div>
+
+                <button id="publishBtn">发布活动</button>
+            </div>
+        </div>
+
+        <div class="card-list" id="cardlist">
+
+        </div>
+
+        <script>
+            console.log("JS 已加载");
+
+            const activities=[
+            {
+                title:"校园歌手大赛",
+                category:"文体活动",
+                tagClass:"tag-sport",
+                desc:"一年一度的校园歌手大赛，欢迎报名参加。",
+                detail:"活动规则：每人限报一首歌，初赛清唱，决赛带伴奏。"
+                //title、category、tagClass、desc、detail 全都是你自己起的名字。
+            },
+            {
+                title:"人工智能讲座",
+                category:"学术讲座",
+                tagClass:"tag-academic",
+                desc:"邀请专家分享AI前沿进展.",
+                detail:"讲座地点：图书馆报告厅，需提前报名"
+
+            },
+            {
+                title: "校园马拉松",
+                category: "文体活动",
+                tagClass: "tag-sport",
+                desc: "健康奔跑，活力校园。",
+                detail: "活动路线：环校一圈，全程约 5 公里。"
+            },
+            {
+                title: "编程分享会",
+                category: "学术讲座",
+                tagClass: "tag-academic",
+                desc: "学长分享前端入门经验。",
+                detail: "地点：教学楼 A101，欢迎自带电脑。"
+            },
+            {
+                title: "篮球友谊赛",
+                category: "文体活动",
+                tagClass: "tag-sport",
+                desc: "院系之间的篮球友谊赛。",
+                detail: "比赛时间：本周六下午三点，体育馆。"
+            },
+        ];
+
+        const cardlist=document.getElementById("cardlist");
+
+        function rendercards(){
+            const html=activities.map(function(activity){
+                // 遍历 activities 数组，对每一项执行后面的函数，把每次返回的结果收集成一个新数组，赋值给 html。
+               return `
+                <div class="card">
+                    <h2>${activity.title}</h2>
+                    <span class="${activity.tagClass}">${activity.category}</span>
+                    <p>${activity.desc}</p>
+                    <button class="like-btn">点赞 (0)</button>
+                    <button class="toggle-btn">查看更多</button>
+                    <div class="detail" style="display:none;">
+                        <p>${activity.detail}</p>
+                    </div>
+                </div>
+                `;
+            }).join("");//把数组里的所有元素用指定的字符串连接起来，返回一个字符串。
+
+            cardlist.innerHTML = html;  
+        }
+        rendercards();
+
+        function bindcardevents(){
+            document.querySelectorAll(".card").forEach(function(card){
+                const likeBtn=card.querySelector(".like-btn");
+                const toggleBtn=card.querySelector(".toggle-btn");
+                const detail=card.querySelector(".detail");
+
+                let liked=false;
+                let count=0;
+
+                likeBtn.addEventListener("click",function(){
+                    if(!liked){
+                        liked=true;
+                        count=1;
+                        likeBtn.textContent="已点赞("+count+")";
+                    }
+                    else{
+                        liked=false;
+                        count=0;
+                        likeBtn.textContent="点赞("+count+")";
+                    }
+                });
+                let expanded=false;
+
+                toggleBtn.addEventListener("click",function(){
+                    if(!expanded){
+                        detail.style.display="block";
+                        toggleBtn.textContent="收起";
+                        expanded=true;
+                    }
+                    else{
+                        detail.style.display="none";
+                        toggleBtn.textContent="查看更多";
+                        expanded=false;
+
+                    }
+                });
+            });
+        }
+
+        bindcardevents();
+
+            // // document.querySelectorAll(".card")：找到页面上所有 class 为 card 的元素，返回一个列表
+            // // .forEach(function (card) { ... })：对列表里的每一个 card 都执行一遍大括号里的代码
+            // document.querySelectorAll(".card").forEach(function (card) {
+
+            //     // 在当前这张 card 内部查找按钮和隐藏内容
+            //     // 注意：这里用 card.querySelector，不是 document.querySelector，只在这张卡片里找
+            //     const likeBtn = card.querySelector(".like-btn");
+            //     const toggleBtn = card.querySelector(".toggle-btn");
+            //     const detail = card.querySelector(".detail");
+
+            //     // 点赞状态：liked 记录是否已点赞，count 记录点赞数
+            //     // 这两个变量写在 forEach 里面，所以每张卡片都有自己独立的 liked 和 count
+            //     let liked = false;
+            //     let count = 0;
+
+            //     // 给当前卡片的点赞按钮绑定点击事件
+            //     likeBtn.addEventListener("click", function () {
+            //         if (!liked) {
+            //             // 当前未点赞 → 变成已点赞
+            //             liked = true;
+            //             count = 1;
+            //             likeBtn.textContent = "已点赞 (" + count + ")";
+            //         } else {
+            //             // 当前已点赞 → 取消点赞
+            //             liked = false;
+            //             count = 0;
+            //             likeBtn.textContent = "点赞 (" + count + ")";
+            //         }
+            //     });
+
+            //     // 展开状态：expanded 记录当前是展开还是收起
+            //     // 同样写在 forEach 里面，每张卡片独立
+            //     let expanded = false;
+
+            //     // 给当前卡片的“查看更多”按钮绑定点击事件
+            //     toggleBtn.addEventListener("click", function () {
+            //         if (!expanded) {
+            //             // 当前收起 → 展开
+            //             detail.style.display = "block";   // 显示规则
+            //             // 把 detail 这个元素的 display 样式设置为 "block"，让它以块级元素的方式显示出来。
+            //             toggleBtn.textContent = "收起";    // 按钮文字变“收起”
+            //             expanded = true;                  // 记住已展开
+            //         } else {
+            //             // 当前展开 → 收起
+            //             detail.style.display = "none";    // 隐藏规则
+            //             toggleBtn.textContent = "查看更多"; // 按钮文字变回“查看更多”
+            //             expanded = false;                 // 记住已收起
+            //         }
+            //     });
+
+            // });
+
+            const titleInput=document.getElementById("titleInput");
+            const categorySelect=document.getElementById("categorySelect");
+            const descInput=document.getElementById("descInput");
+            const titleError=document.getElementById("titleError");
+            const descError=document.getElementById("descError");
+            const publishBtn=document.getElementById("publishBtn");
+
+            publishBtn.addEventListener("click",function(){
+
+                const title=titleInput.value.trim();
+                // .trim()去掉字符串首尾空格
+                const category=categorySelect.value;
+                const desc=descInput.value.trim();
+
+                titleError.textContent="";
+                descError.textContent="";
+
+                let hasError=false;
+
+                if(title==="")
+                // ===	严格相等	不转换类型，类型和值都相同才为 true
+                {
+                    titleError.textContent="活动名称不能为空";
+                    hasError=true;
+                }
+
+                if(desc==""){
+                    descError.textContent="活动介绍不能为空";
+                    hasError=true;
+                }
+
+                if(hasError){
+                    return;// 有错误就直接结束，不添加
+                }
+
+                const tagClass= category==="文体活动" ? "tag-sport" : "tag-academic";
+                // 条件 ? 条件为真时的值 : 条件为假时的值
+                const newActivity={
+                    title: title,
+                    category: category,
+                    tagClass: tagClass,
+                    desc: desc,
+                    detail: "暂无详细规则"
+                };
+
+                activities.unshift(newActivity);
+                // unshift：加到数组开头，新卡片出现在最前面。
+
+                titleInput.value="";
+                descInput.value="";
+
+                rendercards();
+                bindcardevents();
+            })
+        </script>
+    </body>
+</html>
