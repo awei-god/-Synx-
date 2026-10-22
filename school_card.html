@@ -146,45 +146,70 @@
         <script>
             console.log("JS 已加载");
 
-            const activities=[
-            {
+            let activities=[
+            {   
+                id: 1,
                 title:"校园歌手大赛",
                 category:"文体活动",
                 tagClass:"tag-sport",
                 desc:"一年一度的校园歌手大赛，欢迎报名参加。",
-                detail:"活动规则：每人限报一首歌，初赛清唱，决赛带伴奏。"
+                detail:"活动规则：每人限报一首歌，初赛清唱，决赛带伴奏。",
                 //title、category、tagClass、desc、detail 全都是你自己起的名字。
+                liked: false
             },
             {
+                id:2,
                 title:"人工智能讲座",
                 category:"学术讲座",
                 tagClass:"tag-academic",
                 desc:"邀请专家分享AI前沿进展.",
-                detail:"讲座地点：图书馆报告厅，需提前报名"
+                detail:"讲座地点：图书馆报告厅，需提前报名",
+                liked: false
 
             },
             {
+                id: 3,
                 title: "校园马拉松",
                 category: "文体活动",
                 tagClass: "tag-sport",
                 desc: "健康奔跑，活力校园。",
-                detail: "活动路线：环校一圈，全程约 5 公里。"
+                detail: "活动路线：环校一圈，全程约 5 公里。",
+                liked: false
             },
             {
+                id: 4,
                 title: "编程分享会",
                 category: "学术讲座",
                 tagClass: "tag-academic",
                 desc: "学长分享前端入门经验。",
-                detail: "地点：教学楼 A101，欢迎自带电脑。"
+                detail: "地点：教学楼 A101，欢迎自带电脑。",
+                liked: false
             },
             {
+                id: 5,
                 title: "篮球友谊赛",
                 category: "文体活动",
                 tagClass: "tag-sport",
                 desc: "院系之间的篮球友谊赛。",
-                detail: "比赛时间：本周六下午三点，体育馆。"
+                detail: "比赛时间：本周六下午三点，体育馆。",
+                liked: false
             },
         ];
+
+        const STORAGE_KEY="synx-activities";
+
+        function saveActivities(){
+            localStorage.setItem(STORAGE_KEY,JSON.stringify(activities));
+        }
+
+        function loadActivities(){
+            const saved=localStorage.getItem(STORAGE_KEY);
+            if(saved){
+                activities=JSON.parse(saved);
+            }
+        }
+
+        loadActivities();
 
         const cardlist=document.getElementById("cardlist");
 
@@ -192,11 +217,11 @@
             const html=activities.map(function(activity){
                 // 遍历 activities 数组，对每一项执行后面的函数，把每次返回的结果收集成一个新数组，赋值给 html。
                return `
-                <div class="card">
+                <div class="card" data-id="${activity.id}">
                     <h2>${activity.title}</h2>
                     <span class="${activity.tagClass}">${activity.category}</span>
                     <p>${activity.desc}</p>
-                    <button class="like-btn">点赞 (0)</button>
+                    <button class="like-btn">${activity.liked ? "已点赞(1)" : "点赞(0)"}</button>
                     <button class="toggle-btn">查看更多</button>
                     <div class="detail" style="display:none;">
                         <p>${activity.detail}</p>
@@ -214,22 +239,28 @@
                 const likeBtn=card.querySelector(".like-btn");
                 const toggleBtn=card.querySelector(".toggle-btn");
                 const detail=card.querySelector(".detail");
+                const cardId=Number(card.dataset.id);
 
-                let liked=false;
-                let count=0;
+
 
                 likeBtn.addEventListener("click",function(){
-                    if(!liked){
-                        liked=true;
-                        count=1;
-                        likeBtn.textContent="已点赞("+count+")";
-                    }
-                    else{
-                        liked=false;
-                        count=0;
-                        likeBtn.textContent="点赞("+count+")";
-                    }
+                    const target=activities.find(function(a){
+                        return a.id===cardId;
+                       
+                    });
+                    if(!target) return;
+                    //  在 activities 数组里找 id 等于 cardId 的那个活动对象。
+                    //  find 返回第一个匹配项；
+
+                    // 找不到返回 undefined；
+
+                    // cardId 来自前面的 Number(card.dataset.id)。
+
+                    target.liked=!target.liked;
+                    saveActivities();
+                    likeBtn.textContent=target.liked ? "已点赞(1)" : "点赞(0)";
                 });
+                   
                 let expanded=false;
 
                 toggleBtn.addEventListener("click",function(){
@@ -340,14 +371,17 @@
                 const tagClass= category==="文体活动" ? "tag-sport" : "tag-academic";
                 // 条件 ? 条件为真时的值 : 条件为假时的值
                 const newActivity={
+                    id: Data.now(),
                     title: title,
                     category: category,
                     tagClass: tagClass,
                     desc: desc,
-                    detail: "暂无详细规则"
+                    detail: "暂无详细规则",
+                    liked:false
                 };
 
                 activities.unshift(newActivity);
+                saveActivities();
                 // unshift：加到数组开头，新卡片出现在最前面。
 
                 titleInput.value="";
