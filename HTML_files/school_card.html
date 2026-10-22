@@ -53,11 +53,91 @@
                 color: white;
                 cursor:pointer;/*当鼠标移到这个元素上时，鼠标指针变成手型，提示用户“这里可以点击”。*/
             }
+
+            .form-box{
+                background: white;
+                padding:20px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                max-width: 500px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .form-item{
+                margin-bottom: 12px;
+            }
+
+            .form-item label{
+                display: block;
+                /* 让元素以块级元素的方式显示：独占一行，可以设置宽高，默认宽度撑满父容器。 */
+                margin-bottom: 4px;
+                font-size: 14px;
+                color: #333;
+            }
+
+            .form-item input,
+            .form-item select,
+            .form-item textarea{
+                width: 100%;
+                /* 让元素的宽度等于父容器可用宽度的 100%，也就是撑满父容器。 */
+                padding: 8px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 14px;
+                box-sizing: border-box;
+            }
+
+            .form-item textarea{
+                height: 80px;
+                resize: vertical;
+                /* 允许用户垂直方向拖动改变元素大小，不能水平拖动。 */
+            }
+
+            .error{
+                color: red;
+                font-size: 12px;
+                margin: 4px 0 0;
+                /* 上外边距 4px，左右外边距 0，下外边距 0。 */
+                min-height: 16px;
+            }
         </style>
     </head>
 
     <body>
         <h1>校园活动展示</h1>
+
+        <div class="form-box">
+            <h3>发布新活动</h3>
+
+            <div class="form-item">
+                <label for="titleInput">活动名称</label>
+                <input type="text" id="titleInput" placeholder="请输入活动名称">
+                <p class="error" id="titleError"></p>
+
+            </div>
+
+            <div class="form-item">
+                <label for="">活动分类</label>
+                <select name="" id="categorySelect">
+                    <option value="文体活动">文体活动</option>
+                    <option value="学术讲座">学术讲座</option>
+                </select>
+
+            </div>
+
+            <div class="form-item">
+                <label for="descInput">活动介绍</label>
+                <textarea name="" id="descInput" placeholder="请输入活动介绍"></textarea>
+                <p class="error" id="descError"></p>
+                <!-- 这是一个空的错误提示段落，class="error" 管样式，id="descError" 给 JS 定位，初始为空，校验失败时由 JS 写入提示文字。 -->
+
+            </div>
+
+            <div>
+
+                <button id="publishBtn">发布活动</button>
+            </div>
+        </div>
 
         <div class="card-list" id="cardlist">
 
@@ -221,6 +301,61 @@
             //     });
 
             // });
+
+            const titleInput=document.getElementById("titleInput");
+            const categorySelect=document.getElementById("categorySelect");
+            const descInput=document.getElementById("descInput");
+            const titleError=document.getElementById("titleError");
+            const descError=document.getElementById("descError");
+            const publishBtn=document.getElementById("publishBtn");
+
+            publishBtn.addEventListener("click",function(){
+
+                const title=titleInput.value.trim();
+                // .trim()去掉字符串首尾空格
+                const category=categorySelect.value;
+                const desc=descInput.value.trim();
+
+                titleError.textContent="";
+                descError.textContent="";
+
+                let hasError=false;
+
+                if(title==="")
+                // ===	严格相等	不转换类型，类型和值都相同才为 true
+                {
+                    titleError.textContent="活动名称不能为空";
+                    hasError=true;
+                }
+
+                if(desc==""){
+                    descError.textContent="活动介绍不能为空";
+                    hasError=true;
+                }
+
+                if(hasError){
+                    return;// 有错误就直接结束，不添加
+                }
+
+                const tagClass= category==="文体活动" ? "tag-sport" : "tag-academic";
+                // 条件 ? 条件为真时的值 : 条件为假时的值
+                const newActivity={
+                    title: title,
+                    category: category,
+                    tagClass: tagClass,
+                    desc: desc,
+                    detail: "暂无详细规则"
+                };
+
+                activities.unshift(newActivity);
+                // unshift：加到数组开头，新卡片出现在最前面。
+
+                titleInput.value="";
+                descInput.value="";
+
+                rendercards();
+                bindcardevents();
+            })
         </script>
     </body>
 </html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+    <label for="title">活动名称</label>
+    <!-- for+id点击文字可以聚焦输入框 -->
+    <input id="title" type="text" name="title" placeholder="请输入名称" required>
+
+    <label for="category">活动类型</label>
+    <!-- 下拉选择器<select> + <option> -->
+    <select id="category" name="category">
+        <option value="sport">文体活动</option>
+        <option value="academic">学术讲座</option>
+    </select>
+
+    <label for="detail">活动详情</label>
+    <textarea id="detail" name="detail" rows="4" cols="30" placeholder="请输入活动详情"></textarea>
+
+    <button type="submit">提交</button>
+</form>
+    
+</body>
+</html>
