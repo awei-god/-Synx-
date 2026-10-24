@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务看板</title>
+    <style>
+        body{
+            font-family: sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .board{
+            display: flex;
+            /* 把这个元素变成 Flex 弹性容器，它的直接子元素会按照弹性布局排列，默认横向排成一行。 */
+            gap: 16px;
+        }
+
+        .column{
+            flex:1;
+            /* flex: 1 让三列平分宽度。 */
+            background: #eaeaea;
+            border-radius: 12px;
+            padding: 12px;
+            min-height: 300px;
+        }
+
+        .column h2{
+            text-align: center;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-card h3{
+            margin: 0 0 6px;
+            font-size: 16px;
+        }
+
+        .task-card p{
+            margin: 0 0 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .priority{
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .priority-high{
+            background: #ffe0e0;
+            color: #cc0000;
+        }
+
+        .priority-medium{
+            background: #fff3e0;
+            color: #cc6600;
+        }
+
+        .priority-low{
+            background: #e0f0ff;
+            color: #0066cc;
+        }
+
+        .task-actions {
+    margin-top: 10px;
+        }
+
+        .task-actions button {
+            padding: 4px 10px;
+            margin-right: 6px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .action-btn {
+            background: #0066cc;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #ffe0e0;
+            color: #cc0000;
+        }
+
+        /* 表单样式 */
+        .add-task-box{
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            /* 当 Flex 容器里的一行放不下所有子元素时，允许子元素自动换到下一行。 */
+        }
+
+        .add-task-box input,
+        .add-task-box select {
+        padding: 6px 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        }
+
+        .add-task-box input {
+        flex: 1;
+        min-width: 150px;
+        }
+
+        #addTaskBtn {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 6px;
+            background: #0066cc;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .search-box {
+        margin-bottom: 16px;
+        }
+
+        .search-box input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        box-sizing: border-box;
+        }
+</style>
+</head>
+
+
+<body>
+    <h1>任务看板</h1>
+
+    <!-- 表单 -->
+    <div class="add-task-box">
+        <input type="text" id="taskTitleInput" placeholder="任务标题">
+        <input type="text" id="taskDescInput" placeholder="任务说明">
+        <select name="" id="taskPrioritySelect">
+            <option value="高">高</option>
+            <option value="中">中</option>
+            <option value="低">低</option>
+        </select>
+        <button id="addTaskBtn">添加任务</button>
+    </div>
+
+    <!-- 搜索框 -->
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索任务标题或说明">
+
+    </div>
+
+    <div class="board">
+        <div class="column" id="todoColumn">
+            <h2>待处理</h2>
+            
+            <!--这是一个我的学习样例 
+                <div class="task-card">
+                <h3>写作业</h3>
+                <p>完成高数作业第三章</p>
+                <span class="priority priority-high">高</span>
+                这是一个行内标签元素，用来显示“高”这个优先级文字，并通过两个 class 分别控制基础样式和状态样式。
+
+            </div> -->
+        </div>
+
+        <div class="column" id="doingColumn">
+            <h2>进行中</h2>
+
+
+            
+        </div>
+
+        <div class="column" id="doneColumn">
+            <h2>已完成</h2>
+
+
+            
+        </div>
+
+    </div>
+
+    <script>
+
+    let tasks=[
+        {
+            id:1,
+            title: "写作业",
+            desc: "完成高数作业第三章",
+            priority:"高",
+            status:"todo"
+        },
+
+        {
+            id:2,
+            title: "看文档",
+            desc: "阅读DOM事件章节",
+            priority:"中",
+            status: "doing",
+        },
+
+        {
+            id: 3,
+            title: "装系统",
+            desc: "给旧笔记本重装 Linux",
+            priority: "低",
+            status: "done"
+        },
+
+        {
+            id: 4,
+            title: "准备分享会",
+            desc: "整理前端入门分享的提纲",
+            priority: "中",
+            status: "todo"
+        }
+    ];
+
+    let searchKeyword="";
+
+
+    function getPriorityClass(priority){
+        if(priority==="高") return "priority-high";
+        if(priority==="中") return "priority-medium";
+        return "priority-low";
+    }
+
+    function getVisibleTasks(){
+        if(searchKeyword===""){
+            return tasks;
+        }
+
+        return tasks.filter(function(task){
+            return task.title.includes(searchKeyword) || task.desc.includes(searchKeyword);
+        });
+    }
+
+    function getActionButton(task){
+        if(task.status==="todo"){
+            return `<button class="action-btn" data-action="next">开始</button>`;
+
+        }
+        if (task.status === "doing") {
+            return `<button class="action-btn" data-action="next">完成</button>`;
+        }
+         if (task.status === "done") {
+            return `<button class="action-btn" data-action="back">移回</button>`;
+        }
+    }
+
+    function buildTaskHtml(task){
+        return `
+        <div class="task-card" data-id="${task.id}">
+            <h3>${task.title}</h3>
+            <p>${task.desc}</p>
+            <span class="priority ${getPriorityClass(task.priority)}">${task.priority}</span>
+            <div class="task-actions">
+                ${getActionButton(task)}
+                <button class="delete-btn" data-action="delete">删除</button>
+            </div>
+
+        </div>
+        `;
+    }
+
+    function renderBoard(){
+        const todoColumn =document.getElementById("todoColumn");
+        const doingColumn=document.getElementById("doingColumn");
+        const doneColumn=document.getElementById("doneColumn");
+
+        todoColumn.innerHTML="<h2>待处理</h2>";
+        doingColumn.innerHTML="<h2>进行中</h2>";
+        doneColumn.innerHTML="<h2>已完成</h2>";
+
+        getVisibleTasks().forEach(function(task){
+            const html=buildTaskHtml(task);
+
+            if(task.status==="todo"){
+                todoColumn.innerHTML += html;
+            }
+            else if(task.status==="doing"){
+                doingColumn.innerHTML += html;
+            }
+            else if(task.status==="done"){
+                doneColumn.innerHTML += html;
+            }
+        });
+
+        bindTaskEvents();
+    }
+
+    function changeStatus(taskId, action){
+        const task=tasks.find(function(t){
+            return t.id===taskId;
+        });
+
+        if(!task) return;
+
+        if(action==="next"){
+            if(task.status==="todo")task.status="doing";
+            else if(task.status==="doing")task.status="done";
+
+        }
+        else if(action==="back"){
+            task.status="todo";
+        }
+        renderBoard();
+    }
+
+    function deleteTask(taskId){
+        if(!confirm("确定删除这个任务吗？")) return;
+        // 如果用户没有确认（点了取消），就 return，直接结束函数。
+
+        tasks=tasks.filter(function(t){
+            return t.id!==taskId;
+        });
+
+        renderBoard();
+    }
+
+    function bindTaskEvents(){
+        document.querySelectorAll(".task-card").forEach(function(card){
+            const taskId=Number(card.dataset.id);
+
+            const actionBtn=card.querySelector('[data-action="next"],[data-action="back"]');
+            // 逗号 , 表示“或”
+            if(actionBtn){
+                // if(actionBtn)：防止找不到按钮时报错。
+                actionBtn.addEventListener("click",function(){
+                    changeStatus(taskId,actionBtn.dataset.action);
+                })
+            }
+            const deleteBtn=card.querySelector('[data-action="delete"]');
+            deleteBtn.addEventListener("click",function(){
+                deleteTask(taskId);
+            }) ;
+        });
+    }
+
+    // 获取表单元素
+    const taskTitleInput=document.getElementById("taskTitleInput");
+    const taskDescInput=document.getElementById("taskDescInput");
+    const taskPrioritySelect=document.getElementById("taskPrioritySelect")
+    const addTaskBtn=document.getElementById("addTaskBtn");
+
+    function addTask(){
+        const title=taskTitleInput.value.trim();
+        const desc=taskDescInput.value.trim();
+        const priority=taskPrioritySelect.value;
+
+        if(title===""){
+            alert("任务标题不能为空");
+            return;
+        }
+
+        const finalDesc = desc === "" ? "暂无说明" : desc;
+
+        const newTask={
+            id: Date.now(),     //用时间戳做唯一id
+            title: title,
+            desc: finalDesc,
+            priority: priority,
+            status:"todo"
+        };
+
+        // 加到数组最前面去
+        tasks.unshift(newTask);
+
+        // 清空表单
+        taskTitleInput.value="";
+        taskPrioritySelect.value="高";
+        taskDescInput.value="";
+
+        renderBoard();
+    }
+
+    addTaskBtn.addEventListener("click",addTask);
+
+    const searchInput=document.getElementById("searchInput");
+
+    searchInput.addEventListener("input",function(){
+        searchKeyword=searchInput.value.trim();
+        renderBoard();
+    });
+
+
+    renderBoard();
+    
+    
+</script>
+    
+</body>
+</html>
